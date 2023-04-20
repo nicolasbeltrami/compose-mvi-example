@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -32,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nicobeltrami.mvicomposeexample.ui.theme.MVIComposeExampleTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -72,19 +75,7 @@ fun BottomSheet() {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 repeat(3) { index ->
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        modifier = Modifier
-                            .clickable { scope.launch { sheetState.hide() } }
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = null
-                        )
-                        Text(text = "Option $index")
-                    }
+                    ModalItem(scope = scope, state = sheetState, index = index)
                 }
             }
         }
@@ -100,6 +91,30 @@ fun BottomSheet() {
             ) {
                 Text(text = "Show Modal")
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ModalItem(
+    scope: CoroutineScope,
+    state: ModalBottomSheetState,
+    index: Int
+) {
+    Card() {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            modifier = Modifier
+                .clickable { scope.launch { state.hide() } }
+                .fillMaxWidth()
+                .padding(vertical = 10.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ShoppingCart,
+                contentDescription = null
+            )
+            Text(text = "Option $index")
         }
     }
 }
